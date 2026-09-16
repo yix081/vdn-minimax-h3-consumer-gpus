@@ -1,0 +1,36 @@
+# A2 on the A1 artifact -- architecture entirely from the checkpoint (no model section
+# by design). Trainables: every hybrid-transform parameter; the base is frozen, no LoRA.
+initialization:
+  checkpoint: ckpts/train/stage_a1_c1_vdn_anchor/hybrid_step000200.pt
+  base_source: null            # optional local copy of the base weights
+
+training:
+  max_steps: 500
+  freeze_softmax_gate: true          # gate held at its 0.99 init
+
+# muP-style split of the transform parameters, assigned by module structure
+# (utils/lr_classes.py), both on one warmup -> cosine -> min_lr schedule:
+#   big    x big_lr_scale     width-fan-in matrices: alpha.down, output_gate.down, beta_proj,
+#                             to_out_linear, softmax_gate
+#   small  x small_lr_scale   fixed-fan-in / vector params: alpha.A_log, alpha.dt_bias, alpha.up,
+#          (own AdamW eps)    output_gate.up, linear norm gain, short-conv taps
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  min_lr: 5.0e-6
+  warmup_steps: 50
+  weight_decay: 0.0
+  grad_clip: 1.0
+  big_lr_scale: 1.0
+  small_lr_scale: 5.0
+  small_eps: 2.0e-9
+
+checkpoint:
+  output_dir: ckpts/train/stage_a2_c1_vdn_anchor
+  save_every: 10
+  keep_states: 3
+  early_saves: [0, 1, 2, 4, 8]
+
+data:
+  # Your pre-encoded latents index (see "Data Preprocess" in the README for the layout).
+  index_file: ???

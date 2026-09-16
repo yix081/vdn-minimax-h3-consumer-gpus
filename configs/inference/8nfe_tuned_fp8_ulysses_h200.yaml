@@ -1,0 +1,31 @@
+# 8-NFE render, 8x H200 -- rung 2 plus the 6+2 branch-parallel Ulysses layout.
+# ARCH-SPLIT config: on H200 the measured sweep has 6+2 beating 5+3 by ~4% (compute
+# balance binds on NVLink4). The B200 twin (_b200.yaml) is 5+3: there CLC+fp8+the
+# decomposed window shrink compute until per-receiver all-to-all bandwidth binds, and
+# the same sweep gives 5+3 = 1.425 s/NFE vs 6+2 = 1.629. The backend is EXPLICIT, not
+# auto: this file states the kernel it was tuned with. infer.py refuses parallel.*;
+# launch with torchrun --nproc_per_node=8 src/inference/infer_ulysses.py.
+#
+#   torchrun --standalone --nproc_per_node=8 src/inference/infer_ulysses.py \
+#       --config configs/inference/8nfe_tuned_fp8_ulysses_h200.yaml \
+#       checkpoint=... base_source=... render.prompt_file=... render.out=...
+
+kernels:
+  inference_kernels: true
+  softmax_backend: flex
+
+precision:
+  fp8:
+    enabled: true
+    skip_end_blocks: 0
+
+parallel:
+  softmax_ranks: 6
+  profile: false
+
+render:
+  num_frames: 345
+  num_steps: 8
+  warmup_steps: 2
+  video_shift: 12.0
+  audio_shift: 3.0

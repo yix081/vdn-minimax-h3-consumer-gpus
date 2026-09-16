@@ -1,0 +1,73 @@
+# Stage-DMD, variant 2: DMD2 (no GAN) against the frozen VDN's OWN 50-step teacher.
+#   generator  = frozen Stage-B VDN (step 2000) + trainable `turbo` (initialised from an
+#                external few-step LoRA for the dense model)
+#   real score = the Stage-B VDN (the generator minus `turbo`) -- the VDN-vs-dense
+#                mismatch is gone by construction; `turbo` only learns 50 -> 8 inside
+#                VDN's manifold
+#   fake score = VDN + `fake` (rank 128, B=0 at init)
+# Ceiling / eval reference: VDN 50-step. Same everything else as variant 1.
+initialization:
+  checkpoint: ckpts/stage-b-step-2000
+  base_source: null
+  source_step: 2000
+
+turbo:
+  checkpoint: ckpts/external/minimax_h3_turbo_v4_step600_ema.safetensors   # external few-step LoRA (peft names, alpha == rank)
+  adapter_name: turbo
+  family: external_v4_step600_ema      # free-form provenance label stamped into the artifacts
+  num_steps: 8
+  video_shift: 12.0
+  audio_shift: 3.0
+
+dmd:
+  real_score: vdn
+  fake_adapter_name: fake
+  fake_rank: 128
+  fake_updates_per_step: 3
+  fake_warmup_steps: 10
+  u_min: 0.02
+  u_max: 0.98
+
+generation:
+  num_frames: 345
+  latent_height: 48
+  latent_width: 84
+
+training:
+  max_steps: 250
+  seed: 0
+  audio_loss_weight: 0.2
+  auto_resume: true
+
+optimizer:
+  name: adamw
+  lr: 1.0e-5
+  min_lr: 1.0e-6
+  warmup_steps: 100
+  weight_decay: 0.0
+  grad_clip: 1.0
+  fake_lr: 2.0e-5
+  fake_min_lr: 2.0e-6
+  fake_warmup_steps: 10
+  fake_grad_clip: 1.0
+
+distributed:
+  strategy: fsdp2
+  activation_checkpointing: true
+  shard_size: 8
+  offload_activations: true
+  memory_fraction: 0.96
+
+checkpoint:
+  output_dir: ckpts/train/stage_dmd_vdn
+  save_every: 10
+  keep_states: 3
+  early_saves: [0, 1, 2, 4, 8]
+
+runtime:
+  kernels:
+    softmax_backend: flex
+
+data:
+  # Same index as the earlier stages; Stage-DMD reads only its text prompt rows.
+  index_file: ???

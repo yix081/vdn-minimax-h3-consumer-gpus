@@ -1,0 +1,1323 @@
+{
+  "description": "Our measured runs of unmodified upstream SGLang, not upstream advertised timings. The selected prompt is recorded in the reproduction cases. Rows with a null recipe are unmodified-SGLang control runs from the same campaign, recorded so that each result from this repository has a same-GPU baseline; failed rows document that the unmodified 8-bit loader could not start on that GPU.",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc",
+  "model": {
+    "base_repo": "MiniMaxAI/MiniMax-H3",
+    "base_revision": "42ed227ee7df40d41602854ae760620d6eb651fe",
+    "overlay_repo": "kevin-mi/VDN-H3-overlay",
+    "overlay_revision": "7de18275dddfe59da36a234e222bcdd274963bc3",
+    "pipeline_repo": "OpenVDN/vdn-minimax-h3",
+    "pipeline_revision": "51eeecefdb5b524c0df5539446d1dd54a17aa439"
+  },
+  "timing_boundary": "Host generation call through finalized local audio/video file; setup, model load, warmup and post-run validation are excluded from formal request means.",
+  "configuration": {
+    "attention_backend": "hybrid_window_attn_h3",
+    "ring_degree": 1,
+    "tp_size": 1,
+    "ulysses_degree": "equal to GPUs used",
+    "performance_mode": "speed",
+    "enable_torch_compile": false,
+    "enable_breakable_cuda_graph": false,
+    "model_or_kernel_patches": [],
+    "parallelism_note": "Per-result server_args record the encoder policy and offload settings."
+  },
+  "request": {
+    "width": 1344,
+    "height": 768,
+    "fps": 24,
+    "num_inference_steps": 9,
+    "actual_dit_forwards": 8,
+    "short_case": "../reproduce/affordable-video-768/cases/short.json",
+    "long_case": "../reproduce/affordable-video-768/cases/long.json"
+  },
+  "results": [
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": 38.247303574966885,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333333,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.2368499688049801,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-1.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 345,
+      "gpus": 1,
+      "length": "long",
+      "mean_seconds": 110.93360572789486,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333333,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.6869666251001489,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-1.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 2,
+      "length": "short",
+      "mean_seconds": 20.96414196010058,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333337,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.12982239021217842,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-2.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 2,
+        "ulysses_degree": 2,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 345,
+      "gpus": 2,
+      "length": "long",
+      "mean_seconds": 59.5535797739091,
+      "precision": "FP8",
+      "provisional": true,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333333,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.36879105697028153,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-2.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 2,
+        "ulysses_degree": 2,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 4,
+      "length": "short",
+      "mean_seconds": 11.191030013840646,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333333,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.06930148956719095,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-4.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 4,
+        "ulysses_degree": 4,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 345,
+      "gpus": 4,
+      "length": "long",
+      "mean_seconds": 31.577715127573658,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 22.293333333333333,
+      "rented_gpu_count": 4,
+      "usd_per_clip": 0.1955479247900117,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-4.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 4,
+        "ulysses_degree": 4,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 8,
+      "length": "short",
+      "mean_seconds": 7.520483414952953,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 27.92,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.0583255269293018,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-8.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 8,
+        "ulysses_degree": 8,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "formal_n": 6,
+      "frames": 345,
+      "gpus": 8,
+      "length": "long",
+      "mean_seconds": 19.303681150699656,
+      "precision": "FP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 27.920000000000005,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.1497107715909818,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "h100_sxm_80gb",
+      "recipe": "../reproduce/affordable-video-768/recipes/h100-8.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 8,
+        "ulysses_degree": 8,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "quantization": "fp8",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "NCCL_NVLS_ENABLE": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      }
+    },
+    {
+      "hardware": "b200",
+      "gpus": 1,
+      "frames": 345,
+      "length": "long",
+      "seed": 1000,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 3,
+      "formal_seconds": [
+        60.70355948107317,
+        60.804216779302806,
+        60.748686000704765
+      ],
+      "mean_seconds": 60.752154087026916,
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.9956603030929412,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "native-one-01"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "measured_config_sha256": "ad91596a6179011e99697c29651d12ab8025b89f750b01e4d4365ca7c4a54e69",
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "warmup_protocol": "Two explicit warm requests; first 8-GPU cohort has five formal requests, other cohorts three. The 8-GPU result pools both native cohorts.",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-1-native.json"
+    },
+    {
+      "hardware": "b200",
+      "gpus": 2,
+      "frames": 345,
+      "length": "long",
+      "seed": 1000,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 3,
+      "formal_seconds": [
+        34.21147178020328,
+        34.090297972783446,
+        34.16290832916275
+      ],
+      "mean_seconds": 34.15489269404983,
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.5597607413747054,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "native-two-01"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 2,
+        "ulysses_degree": 2,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "measured_config_sha256": "26c861699f6d8188442ea83384200c96f397bc4792e6e239faa7e8d038737abb",
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "warmup_protocol": "Two explicit warm requests; first 8-GPU cohort has five formal requests, other cohorts three. The 8-GPU result pools both native cohorts.",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-2-native.json"
+    },
+    {
+      "hardware": "b200",
+      "gpus": 4,
+      "frames": 345,
+      "length": "long",
+      "seed": 1000,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 3,
+      "formal_seconds": [
+        17.9340011049062,
+        18.009627387858927,
+        18.005872619803995
+      ],
+      "mean_seconds": 17.983167037523042,
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.2947241264482943,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "native-four-01"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 4,
+        "ulysses_degree": 4,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "measured_config_sha256": "372d9cd8c9b1f71a3c7a676788dd78aa7227cdf3f5ebdb1144a08cb357389015",
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "warmup_protocol": "Two explicit warm requests; first 8-GPU cohort has five formal requests, other cohorts three. The 8-GPU result pools both native cohorts.",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-4-native.json",
+      "second_node_repeat": {
+        "formal_n": 3,
+        "mean_seconds": 17.8928220809903,
+        "formal_timings_seconds": [
+          17.855,
+          17.857,
+          17.967
+        ],
+        "note": "Same recipe on a second eight-B200 node, measured in the session that produced the B200 short rows; not pooled into mean_seconds."
+      }
+    },
+    {
+      "hardware": "b200",
+      "gpus": 8,
+      "frames": 345,
+      "length": "long",
+      "seed": 1000,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 8,
+      "formal_seconds": [
+        10.077378740068525,
+        10.344754867255688,
+        10.09186378493905,
+        10.114413002040237,
+        10.274983153678477,
+        9.953739237971604,
+        9.973776258993894,
+        9.998017244040966
+      ],
+      "mean_seconds": 10.103615786123555,
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.16558703649480272,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "native-eight-01",
+        "native-eight-repeat-02"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 8,
+        "ulysses_degree": 8,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "measured_config_sha256": "c9725eed7a2efe200bfc7c385b1eefeb9989463be0371b8ad6272fe7cb3557c2",
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "warmup_protocol": "Two explicit warm requests; first 8-GPU cohort has five formal requests, other cohorts three. The 8-GPU result pools both native cohorts.",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-8-native.json",
+      "second_node_repeat": {
+        "formal_n": 3,
+        "mean_seconds": 10.089829093660228,
+        "formal_timings_seconds": [
+          10.009,
+          10.131,
+          10.13
+        ],
+        "note": "Same recipe on a second eight-B200 node, measured in the session that produced the B200 short rows; not pooled into mean_seconds."
+      }
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": 21.168104081686277,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.34692170578319176,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "b200",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-1-native.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1",
+        "NCCL_NVLS_ENABLE": "0"
+      },
+      "formal_timings_seconds": [
+        21.163,
+        21.127,
+        21.215
+      ],
+      "formal_output_sha256": "78fdab9a64055be63ea8cec2384656d287000a2b43fa950f6b35912f4dba6ed6"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 2,
+      "length": "short",
+      "mean_seconds": 11.879596901320232,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.19469339366052604,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "b200",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-2-native.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 2,
+        "ulysses_degree": 2,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1",
+        "NCCL_NVLS_ENABLE": "0"
+      },
+      "formal_timings_seconds": [
+        11.854,
+        11.886,
+        11.899
+      ],
+      "formal_output_sha256": "dc743b835b0b877510c8f7ea3c2f497400a2934b7c4af7d32298653a6e5ffe0a"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 4,
+      "length": "short",
+      "mean_seconds": 6.451705819965961,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.10573628982721993,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "b200",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-4-native.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 4,
+        "ulysses_degree": 4,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1",
+        "NCCL_NVLS_ENABLE": "0"
+      },
+      "formal_timings_seconds": [
+        6.45,
+        6.448,
+        6.457
+      ],
+      "formal_output_sha256": "945e4a02311caf68cae563085f33d09faa2b16bac22b01db950e0aa945e2c7a5"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 8,
+      "length": "short",
+      "mean_seconds": 3.8338552993373014,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 59.0,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.06283262851691689,
+      "implementation": "Reproduced upstream SGLang",
+      "hardware": "b200",
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-8-native.json",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 8,
+        "ulysses_degree": 8,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1",
+        "NCCL_NVLS_ENABLE": "0"
+      },
+      "formal_timings_seconds": [
+        3.815,
+        3.832,
+        3.855
+      ],
+      "formal_output_sha256": "027470e65cc25661b26e300ef45dd4e0a65b8d8e75fd584c21562c44d0065837"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": 144.19353128199387,
+      "precision": "BF16",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 0.7333333333333333,
+      "rented_gpu_count": 1,
+      "usd_per_clip": 0.02937275637225801,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "l40s",
+      "server_args": {
+        "attention_backend": "hybrid_window_attn_h3",
+        "enable_breakable_cuda_graph": false,
+        "enable_torch_compile": false,
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "performance_mode": "speed",
+        "quantization": "bf16",
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/l40s-short.json",
+      "recipe_sha256": "7cd2ad4901797be35a65017b0a44f884516c3ae0f943d618d936f67540ab0da2"
+    },
+    {
+      "formal_n": 3,
+      "frames": 345,
+      "gpus": 1,
+      "length": "long",
+      "mean_seconds": 446.1392375349921,
+      "precision": "BF16",
+      "provisional": false,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 0.7333333333333333,
+      "rented_gpu_count": 1,
+      "usd_per_clip": 0.09088021505342432,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "l40s",
+      "server_args": {
+        "attention_backend": "hybrid_window_attn_h3",
+        "enable_breakable_cuda_graph": false,
+        "enable_torch_compile": false,
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "performance_mode": "speed",
+        "quantization": "bf16",
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/l40s-long.json",
+      "recipe_sha256": "5d1ab9722a95c09fc90c5552447e39053198278df7b8327fe8c9a48ec7e9ba6c"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": 85.03185923521717,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 11.733333333333334,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.27714087454441155,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx_pro6000_blackwell_ws",
+      "server_args": {
+        "attention_backend": "hybrid_window_attn_h3",
+        "enable_breakable_cuda_graph": false,
+        "enable_torch_compile": false,
+        "encoder_parallel": "auto",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "performance_mode": "speed",
+        "quantization": null,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "ulysses_degree": 1,
+        "use_fsdp_inference": false,
+        "vae_cpu_offload": false,
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        "SGLANG_CACHE_DIT_ENABLED": "false",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/rtx-pro6000-short.json",
+      "power_limit_watts_per_gpu": 400,
+      "recipe_sha256": "a6871e5cfd66abde3e6f8a1bf1feece24037fee47c2a583112b26051e1dbebf9"
+    },
+    {
+      "formal_n": 3,
+      "frames": 345,
+      "gpus": 1,
+      "length": "long",
+      "mean_seconds": 250.65761009107032,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": null,
+      "seed": 1000,
+      "status": "complete",
+      "whole_node_hourly_usd": 11.733333333333334,
+      "rented_gpu_count": 8,
+      "usd_per_clip": 0.8169581365931181,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx_pro6000_blackwell_ws",
+      "server_args": {
+        "attention_backend": "hybrid_window_attn_h3",
+        "enable_breakable_cuda_graph": false,
+        "enable_torch_compile": false,
+        "encoder_parallel": "auto",
+        "layerwise_offload_components": [
+          "text_encoder"
+        ],
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "performance_mode": "speed",
+        "quantization": null,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "ulysses_degree": 1,
+        "use_fsdp_inference": false,
+        "vae_cpu_offload": true,
+        "warmup_mode": "off"
+      },
+      "environment": {
+        "LEANVDN_H3_MEMORY_LIFETIME": "0",
+        "LEANVDN_SGLANG_ADALN_CACHE": "0",
+        "LEANVDN_STREAM_QUANT_LOAD": "0",
+        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        "SGLANG_CACHE_DIT_ENABLED": "false",
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/rtx-pro6000-long.json",
+      "power_limit_watts_per_gpu": 400,
+      "recipe_sha256": "59e991af6b85e35d9c0fd62df63401060fa2d002062b85f5f6affdd8a700b64f"
+    },
+    {
+      "formal_n": 3,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": 231.02216805269322,
+      "precision": "BF16",
+      "provisional": false,
+      "reason": null,
+      "seed": 17,
+      "status": "complete",
+      "whole_node_hourly_usd": 0.6,
+      "rented_gpu_count": 1,
+      "usd_per_clip": 0.03850369467544887,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx4090",
+      "recipe": "../reproduce/affordable-video-768/recipes/rtx4090-native-short.json",
+      "source_report_sha256": "10a913368ed0bacb55f2fe5588140a15cf8d5465dea0ad6780a8836f74acfd4f",
+      "note": "Ada leaves the transformer unquantized (BF16) with transformer/text-encoder layerwise offload and zero resident layers. Measured in the same host and session as this repository's FP8 row; an earlier session on the same host gave 236.0 s.",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_mode": "off",
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      }
+    },
+    {
+      "formal_n": 0,
+      "frames": 345,
+      "gpus": 1,
+      "length": "long",
+      "mean_seconds": null,
+      "precision": "BF16",
+      "provisional": false,
+      "reason": "CUDA out of memory in the first DiT forward of the 345-frame clip with BF16 weights and native VAE CPU offload enabled.",
+      "seed": 1000,
+      "status": "failed",
+      "whole_node_hourly_usd": null,
+      "rented_gpu_count": null,
+      "usd_per_clip": null,
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx4090",
+      "recipe": null,
+      "source_report_sha256": "793e27fcb0f6d8d583804d11174ef42b5c51abf2cfbb42ecc5fbbba94814df19",
+      "note": "Unmodified SGLang BF16 offload with vae_cpu_offload=true; one attempt, failed before the first denoising step completed.",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_mode": "off",
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false,
+        "vae_cpu_offload": true
+      }
+    },
+    {
+      "formal_n": 0,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": null,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": "Unmodified loader ran out of GPU memory while loading the transformer (cold load), before the first denoising step.",
+      "seed": 17,
+      "status": "failed",
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx5090",
+      "recipe": null,
+      "source_report_sha256": "4f1aef4529ed0c7dd60e62d4e1c8a9a849e8b3bc9e142ee2a4e1ce7f96392e13",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_mode": "off",
+        "quantization": null,
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      }
+    },
+    {
+      "formal_n": 0,
+      "frames": 124,
+      "gpus": 1,
+      "length": "short",
+      "mean_seconds": null,
+      "precision": "MXFP8",
+      "provisional": false,
+      "reason": "Unmodified loader ran out of GPU memory at transformer full_tensor.to during loading, before the first denoising step.",
+      "seed": 17,
+      "status": "failed",
+      "implementation": "Reproduced upstream SGLang with native offload",
+      "hardware": "rtx_pro5000_blackwell",
+      "recipe": null,
+      "source_report_sha256": "99407170b173ac409481f1f841d818ea89146c173b41440a546836462cb1b6e8",
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_mode": "off",
+        "layerwise_offload_components": [
+          "transformer",
+          "text_encoder"
+        ],
+        "layerwise_resident_layers": {
+          "transformer": 0
+        },
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      }
+    },
+    {
+      "hardware": "b300",
+      "gpus": 1,
+      "frames": 124,
+      "length": "short",
+      "seed": 17,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 3,
+      "formal_seconds": [
+        21.620549545972608,
+        21.42577352398075,
+        21.303120370954275
+      ],
+      "mean_seconds": 21.449814480302546,
+      "whole_node_hourly_usd": 9.375,
+      "rented_gpu_count": 1,
+      "usd_per_clip": 0.05585889187578788,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "b300-conc-01"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-1-native.json",
+      "recipe_note": "server_args of b200-1-native.json unchanged; performance_protocol feasibility 0, warmups 2, timings 3; hardware_guard absent",
+      "formal_output_sha256": [
+        "3b2f629526964030fa79b475ab3d12a034b42a3a0c2f1f5a6f8a2ba1aa30783a"
+      ],
+      "formal_outputs_byte_identical": true,
+      "peak_memory_mb": 106956.0,
+      "load_seconds": 305.2912048168946,
+      "host": "NVIDIA B300 SXM6 AC 275040 MiB (compute capability 10.3), driver 595.84, PCIe Gen6 x16, Intel Xeon 6787P, rented one GPU of an eight-GPU node; torch 2.13.0+cu130 runs its sm_100 kernels on this sm_103 card",
+      "measured_utc_date": "2026-09-16"
+    },
+    {
+      "hardware": "b300",
+      "gpus": 1,
+      "frames": 345,
+      "length": "long",
+      "seed": 1000,
+      "precision": "MXFP8",
+      "quantization_argument": null,
+      "formal_n": 3,
+      "formal_seconds": [
+        58.7398064279696,
+        58.95789816393517,
+        59.203461868921295
+      ],
+      "mean_seconds": 58.96705548694202,
+      "whole_node_hourly_usd": 9.375,
+      "rented_gpu_count": 1,
+      "usd_per_clip": 0.15356004033057818,
+      "status": "complete",
+      "provisional": false,
+      "implementation": "Reproduced upstream SGLang",
+      "source_cohorts": [
+        "b300-conc-01"
+      ],
+      "server_args": {
+        "model_path": "OpenVDN/vdn-minimax-h3",
+        "num_gpus": 1,
+        "ulysses_degree": 1,
+        "ring_degree": 1,
+        "tp_size": 1,
+        "encoder_parallel": "auto",
+        "attention_backend": "hybrid_window_attn_h3",
+        "performance_mode": "speed",
+        "warmup_num_frames": 345,
+        "warmup_resolutions": [
+          "1344x768"
+        ],
+        "enable_torch_compile": false,
+        "enable_breakable_cuda_graph": false
+      },
+      "environment": {
+        "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+      },
+      "recipe": "../reproduce/affordable-video-768/recipes/b200-1-native.json",
+      "recipe_note": "server_args of b200-1-native.json unchanged; performance_protocol feasibility 0, warmups 2, timings 3; hardware_guard absent",
+      "formal_output_sha256": [
+        "a228a56150f2c6b71a6caf25829af96fba1caa149570d96c4062613e6e7f2b87"
+      ],
+      "formal_outputs_byte_identical": true,
+      "peak_memory_mb": 128466.0,
+      "load_seconds": 144.14583047991619,
+      "host": "NVIDIA B300 SXM6 AC 275040 MiB (compute capability 10.3), driver 595.84, PCIe Gen6 x16, Intel Xeon 6787P, rented one GPU of an eight-GPU node; torch 2.13.0+cu130 runs its sm_100 kernels on this sm_103 card",
+      "measured_utc_date": "2026-09-16"
+    }
+  ],
+  "single_gpu_parallelism": {
+    "hardware": "b300",
+    "measured_utc_date": "2026-09-16",
+    "whole_node_hourly_usd": 9.375,
+    "source_cohorts": [
+      "b300-conc-01"
+    ],
+    "question": "Does the 288 GB of one B300 let more clips run in parallel than one request at a time?",
+    "method": "Unmodified SGLang d72e595 with the server_args of b200-1-native.json. outputs_per_request cells pass num_outputs_per_prompt = n in one request (the shipped runner fixes it at 1; these cells used a one-line change that reads it from an environment variable and accepts n results). concurrent_processes cells start n independent runner processes on the same GPU.",
+    "baseline_clips_per_hour": {
+      "short": 167.83361941455928,
+      "long": 61.05103892795195
+    },
+    "cells": [
+      {
+        "mode": "outputs_per_request",
+        "length": "short",
+        "parallel": 2,
+        "protocol": "one warmup, two timed requests",
+        "request_seconds": [
+          39.91631131095346,
+          39.81787083798554
+        ],
+        "mean_request_seconds": 39.8670910744695,
+        "results_per_request": 2,
+        "clips_per_hour": 180.6000840781386,
+        "usd_per_clip": 0.05191027483654883,
+        "peak_memory_mb": 109886.0,
+        "denoising_stage_seconds_per_output": 14.832764109014533,
+        "decoding_stage_seconds_per_output": 3.558493828983046,
+        "outputs_byte_identical_across_timed_requests": true
+      },
+      {
+        "mode": "outputs_per_request",
+        "length": "short",
+        "parallel": 4,
+        "protocol": "one warmup, two timed requests",
+        "request_seconds": [
+          79.89314254606143,
+          79.74468909902498
+        ],
+        "mean_request_seconds": 79.8189158225432,
+        "results_per_request": 4,
+        "clips_per_hour": 180.40836375195437,
+        "usd_per_clip": 0.0519654399886349,
+        "peak_memory_mb": 114282.0,
+        "denoising_stage_seconds_per_output": 14.91295049909968,
+        "decoding_stage_seconds_per_output": 3.6258749769767746,
+        "outputs_byte_identical_across_timed_requests": true
+      },
+      {
+        "mode": "outputs_per_request",
+        "length": "short",
+        "parallel": 8,
+        "protocol": "one warmup, two timed requests",
+        "request_seconds": [
+          161.6653856850462,
+          162.6105031199986
+        ],
+        "mean_request_seconds": 162.1379444025224,
+        "results_per_request": 8,
+        "clips_per_hour": 177.62652725201292,
+        "usd_per_clip": 0.05277927877686276,
+        "peak_memory_mb": 126004.0,
+        "denoising_stage_seconds_per_output": 14.849266497069038,
+        "decoding_stage_seconds_per_output": 4.101776128984056,
+        "outputs_byte_identical_across_timed_requests": true
+      },
+      {
+        "mode": "outputs_per_request",
+        "length": "long",
+        "parallel": 2,
+        "protocol": "one warmup, two timed requests",
+        "request_seconds": [
+          115.06737288204022,
+          115.39437263901345
+        ],
+        "mean_request_seconds": 115.23087276052684,
+        "results_per_request": 2,
+        "clips_per_hour": 62.483254942996595,
+        "usd_per_clip": 0.15004019890693598,
+        "peak_memory_mb": 140694.0,
+        "denoising_stage_seconds_per_output": 43.62852047092747,
+        "decoding_stage_seconds_per_output": 10.76133376301732,
+        "outputs_byte_identical_across_timed_requests": true
+      },
+      {
+        "mode": "outputs_per_request",
+        "length": "long",
+        "parallel": 4,
+        "protocol": "one warmup, two timed requests",
+        "request_seconds": [
+          231.5708676179638,
+          231.50146640196908
+        ],
+        "mean_request_seconds": 231.53616700996645,
+        "results_per_request": 4,
+        "clips_per_hour": 62.193307360832975,
+        "usd_per_clip": 0.15073969206378024,
+        "peak_memory_mb": 156998.0,
+        "denoising_stage_seconds_per_output": 43.599392733071,
+        "decoding_stage_seconds_per_output": 11.308670299942605,
+        "outputs_byte_identical_across_timed_requests": true
+      },
+      {
+        "mode": "concurrent_processes",
+        "length": "short",
+        "parallel": 2,
+        "protocol": "two independent runner processes on the same GPU, each one warmup and three timed requests, started 45 s apart",
+        "request_seconds": [
+          43.79092159902211,
+          43.59370225004386,
+          43.32621855405159,
+          43.79788516589906,
+          43.2777766759973,
+          43.129642257932574
+        ],
+        "mean_request_seconds": 43.48602441715775,
+        "clips_per_hour": 165.57043547901756,
+        "usd_per_clip": 0.05662242762650749,
+        "peak_memory_mb_per_process": 106956.0,
+        "overlap_window_seconds": 133.5605890750885,
+        "load_seconds": [
+          163.8490615740884,
+          119.21367187495343
+        ]
+      }
+    ],
+    "failed": [
+      {
+        "mode": "concurrent_processes",
+        "length": "short",
+        "parallel": 3,
+        "error": "CUDA out of memory in the third process during the 345-frame load warmup: each process held about 98 GB at that point; 267.7 GiB total, 3.3 GiB free"
+      }
+    ],
+    "not_run": [
+      "outputs_per_request 16 short",
+      "outputs_per_request 8 long",
+      "concurrent_processes 2 long",
+      "concurrent_processes 4 short (would not fit: about 104 GB per process)"
+    ],
+    "finding": "num_outputs_per_prompt runs the outputs one after another in this revision (the denoising stage per output is unchanged and the request time is linear in n); two processes on one card each run at half speed. One request already saturates the GPU, so the extra memory does not add throughput."
+  }
+}

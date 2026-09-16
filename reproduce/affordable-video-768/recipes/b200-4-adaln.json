@@ -1,0 +1,39 @@
+{
+  "recipe_id": "b200-4-mxfp8-adaln",
+  "source_profile": "adaln-patched-cache-on",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc",
+  "hardware": "B200",
+  "used_gpus": 4,
+  "server_args": {
+    "model_path": "OpenVDN/vdn-minimax-h3",
+    "num_gpus": 4,
+    "ulysses_degree": 4,
+    "ring_degree": 1,
+    "tp_size": 1,
+    "encoder_parallel": "auto",
+    "attention_backend": "hybrid_window_attn_h3",
+    "performance_mode": "speed",
+    "enable_torch_compile": false,
+    "enable_breakable_cuda_graph": false,
+    "warmup_mode": "off"
+  },
+  "environment": {
+    "LEANVDN_SGLANG_ADALN_CACHE": "1",
+    "NCCL_NVLS_ENABLE": "0",
+    "SGLANG_DIFFUSION_STAGE_LOGGING": "1",
+    "LEANVDN_ADALN_VERIFY": "1"
+  },
+  "patches": [
+    "exact-loaded-projection-adaln-cache"
+  ],
+  "precision": "automatic MXFP8 on Blackwell; verify resolved path",
+  "expected_resolved": {
+    "num_gpus": 4,
+    "ulysses_degree": 4,
+    "tp_size": 1,
+    "quantization": "mxfp8",
+    "warmup_mode": "off",
+    "enable_torch_compile": false,
+    "enable_breakable_cuda_graph": false
+  }
+}

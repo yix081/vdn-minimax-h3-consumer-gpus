@@ -1,0 +1,57 @@
+{
+  "description": "Per-GPU hourly rental prices used for the cost columns in README.md. Median on-demand price per GPU-hour across providers as aggregated by GetDeploying, read on the retrieval date below. These are market snapshots, not our rental invoices; the measured whole-node charges remain in affordable-video-768-results.json.",
+  "retrieved_utc_date": "2026-09-15",
+  "formula": "usd_per_clip = usd_per_gpu_hour * gpus_used * mean_seconds / 3600; usd_per_video_second = usd_per_clip / clip_seconds (short 124/24 s, long 345/24 s). GPU rental only, at full utilization; loading, warmup, idle time, storage and bandwidth are excluded.",
+  "gpus": {
+    "rtx4090": {
+      "usd_per_gpu_hour": 0.44,
+      "basis": "median on-demand",
+      "providers": 20,
+      "source": "https://getdeploying.com/gpus/nvidia-rtx-4090"
+    },
+    "rtx5090": {
+      "usd_per_gpu_hour": 0.65,
+      "basis": "median on-demand",
+      "providers": 20,
+      "source": "https://getdeploying.com/gpus/nvidia-rtx-5090"
+    },
+    "l40s": {
+      "usd_per_gpu_hour": 1.5,
+      "basis": "median on-demand",
+      "providers": 35,
+      "source": "https://getdeploying.com/gpus/nvidia-l40s"
+    },
+    "rtx_pro5000_blackwell": {
+      "usd_per_gpu_hour": 0.7,
+      "basis": "cheapest in-stock on-demand; no median published (4 providers)",
+      "providers": 4,
+      "source": "https://getdeploying.com/gpus/nvidia-rtx-pro-5000"
+    },
+    "rtx_pro6000_blackwell_ws": {
+      "usd_per_gpu_hour": 2.22,
+      "basis": "median on-demand",
+      "providers": 45,
+      "source": "https://getdeploying.com/gpus/nvidia-rtx-pro-6000"
+    },
+    "h100_sxm_80gb": {
+      "usd_per_gpu_hour": 3.29,
+      "basis": "median on-demand",
+      "providers": 53,
+      "source": "https://getdeploying.com/gpus/nvidia-h100"
+    },
+    "b200": {
+      "usd_per_gpu_hour": 6.25,
+      "basis": "median on-demand",
+      "providers": 35,
+      "source": "https://getdeploying.com/gpus/nvidia-b200"
+    },
+    "b300": {
+      "usd_per_gpu_hour": 7.87,
+      "basis": "median on-demand",
+      "providers": 16,
+      "source": "https://getdeploying.com/gpus/nvidia-b300",
+      "retrieved_utc_date": "2026-09-16",
+      "note": "median across the 16 providers with priced on-demand B300 configurations (33 tracked); page last updated 2026-09-16"
+    }
+  }
+}

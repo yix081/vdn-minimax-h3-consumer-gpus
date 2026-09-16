@@ -1,0 +1,1 @@
+upstream base: 3a2f35d (huggingface/diffusers main)

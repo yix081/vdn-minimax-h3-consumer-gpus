@@ -1,0 +1,211 @@
+{
+  "title": "Sequence-parallel (Ulysses 2) same-seed repeatability diagnostic",
+  "hardware": "2x NVIDIA RTX PRO 6000 Blackwell Workstation Edition, one verified on-demand host",
+  "driver": "580.178.04\nNVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc",
+  "workload": "124-frame 1344x768 clip, seed 17, MXFP8 (automatic on SM120), text encoder layerwise offload, transformer resident, two warmups then two probes per arm in one process",
+  "timing_note": "Diagnostic wall-clock only; never a deployment timing. Warmup 1 includes compile/load effects.",
+  "conclusion": "Only the arms that remove the private side stream ordering (current-stream selector, or CUDA_LAUNCH_BLOCKING) reproduce byte-identically; NCCL/cuBLAS determinism settings do not. The instrumented arm places the first divergence after the first DiT forward on both ranks, consistent with the earlier run.",
+  "arms": {
+    "control": {
+      "description": "pinned source, no change",
+      "environment": {},
+      "status": "completed",
+      "requests": [
+        {
+          "kind": "warmup",
+          "seconds": 106.79,
+          "decoded_video_sha256": "c43a99d757dfdbfff2d12d0cb9a7c6d760486f71ecb9a9785d56692f0a9538e8",
+          "decoded_audio_sha256": "c090b004274db8dd2b0163ff88a4272491e9c886b05166d48c5246c9067b7344"
+        },
+        {
+          "kind": "warmup",
+          "seconds": 48.3,
+          "decoded_video_sha256": "f9146d98fd865b02693a485cbca7c3bf8511a6d8fef8576c493a9da364ff2199",
+          "decoded_audio_sha256": "50734f720fd90a054abaf59de8b1c465a32849a26d16be22415dbbfa9c2e5699"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 48.99,
+          "decoded_video_sha256": "3a71256bc5d6a3a7ed7cbef8a53efd699025099a34303a49a7de1521092d812b",
+          "decoded_audio_sha256": "3c8b4859e01523c73033041894d6f061352d0a08aa3fb597afc8ab3d2d53cbe3"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 50.1,
+          "decoded_video_sha256": "f0dc984a3dd0d196f251f33df0a4f3dcef8f0cce1e5720d19794d811d1178431",
+          "decoded_audio_sha256": "fe068fd4d0f2ad05479a26f3ada6f2ba0d89da3999d9ddbb91874ff710b0e620"
+        }
+      ],
+      "probes_decoded_identical": {
+        "video": false,
+        "audio": false
+      },
+      "first_divergence_by_rank": null,
+      "all_four_requests_identical_video": false,
+      "source_report_sha256": "7fa7a1e1417ffb1b828a01f0eb92301aee9834cffdcfab5d381b6038ca363c8a"
+    },
+    "current_stream": {
+      "description": "in-process replacement of the VDN linear-branch stream selector with the current stream (same change as tools/apply_sp_main_stream_patch.py)",
+      "environment": {},
+      "status": "completed",
+      "requests": [
+        {
+          "kind": "warmup",
+          "seconds": 53.09,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "d832515b544627d498eea394ebd40efab1fead0c7ad00ebee5650cca5dfc66ea"
+        },
+        {
+          "kind": "warmup",
+          "seconds": 47.74,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 49.45,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 49.4,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        }
+      ],
+      "probes_decoded_identical": {
+        "video": true,
+        "audio": true
+      },
+      "first_divergence_by_rank": null,
+      "all_four_requests_identical_video": true,
+      "source_report_sha256": "8b2c72e85701ddaac88c65f6fe088d680ddda6b3c0dd8a4765a6db5293b7eacd"
+    },
+    "deterministic_env": {
+      "description": "pinned source with NCCL_ALGO=Ring, NCCL_PROTO=Simple, NCCL_NVLS_ENABLE=0, CUBLAS_WORKSPACE_CONFIG=:4096:8",
+      "environment": {
+        "NCCL_ALGO": "Ring",
+        "NCCL_PROTO": "Simple",
+        "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+        "NCCL_NVLS_ENABLE": "0"
+      },
+      "status": "completed",
+      "requests": [
+        {
+          "kind": "warmup",
+          "seconds": 60.3,
+          "decoded_video_sha256": "d496a710b19b6a5de9312393a67eeb6972d3a0e060d2562681fb5c464205d58d",
+          "decoded_audio_sha256": "886e61c7815d707857850de8f751ec8260765f5497aa8d400fa9ab9496daf54c"
+        },
+        {
+          "kind": "warmup",
+          "seconds": 52.7,
+          "decoded_video_sha256": "eb1a51908940bc11e690b93e352f7656edda163b15bd90bbc086a036ac1f1b42",
+          "decoded_audio_sha256": "745c05d60a52ca52c57e9966b13bb98578e3ca64780ab1564b22f15e706634b0"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 55.34,
+          "decoded_video_sha256": "9560d768506abf0453fa7c1b980c4ff7f4925777dde1d095399be8311fd78061",
+          "decoded_audio_sha256": "9d29490f13aae6f4bb8f8e3388d4097fb3202d50f96e95b3ec29f2b147dd7230"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 52.49,
+          "decoded_video_sha256": "642e6e4f7c96b298b6f59f820bc065fa9912ad9e7f0ab98d822227c0c496a5f2",
+          "decoded_audio_sha256": "f25fc096c2cc221dedfac5afa252470654ccbca8a245266b862937870bc2781a"
+        }
+      ],
+      "probes_decoded_identical": {
+        "video": false,
+        "audio": false
+      },
+      "first_divergence_by_rank": null,
+      "all_four_requests_identical_video": false,
+      "source_report_sha256": "c0bb7219e9e3b04b4e29c172bceeebb7ddd8585d93426da2d0ab77c912319024"
+    },
+    "launch_blocking": {
+      "description": "pinned source with CUDA_LAUNCH_BLOCKING=1",
+      "environment": {
+        "CUDA_LAUNCH_BLOCKING": "1"
+      },
+      "status": "completed",
+      "requests": [
+        {
+          "kind": "warmup",
+          "seconds": 63.42,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "d832515b544627d498eea394ebd40efab1fead0c7ad00ebee5650cca5dfc66ea"
+        },
+        {
+          "kind": "warmup",
+          "seconds": 55.55,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 55.85,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 57.42,
+          "decoded_video_sha256": "c5e3cdae96430c2a223568698f6506d79dd9f6cb929e2bb6e096b17d524b2db7",
+          "decoded_audio_sha256": "1141ff6ce03d5de4a7ccf78a89fbdf71f67f56a65e54edd495000bb0c091cd6e"
+        }
+      ],
+      "probes_decoded_identical": {
+        "video": true,
+        "audio": true
+      },
+      "first_divergence_by_rank": null,
+      "all_four_requests_identical_video": true,
+      "source_report_sha256": "f3cf45fa8237df6877156ab1151b128100510bee37552432ba0a791d62073e67"
+    },
+    "sync_hash": {
+      "description": "pinned source with per-rank latent hashing at every step (synchronizes the device at each checkpoint)",
+      "environment": {},
+      "status": "completed",
+      "requests": [
+        {
+          "kind": "warmup",
+          "seconds": 53.48,
+          "decoded_video_sha256": "f4ec3fb552750269ea3c32d74f054e7e57e75e085b10740065e6b7d8252921dc",
+          "decoded_audio_sha256": "61f7e6991ef6446aef2415787a2d9588b50459ce15345328e7ce14856edc0e05"
+        },
+        {
+          "kind": "warmup",
+          "seconds": 48.64,
+          "decoded_video_sha256": "f31ceb4f8476f4a9ed72cb75c349bc79ddd5a36e771788090c484824d1d0f2ef",
+          "decoded_audio_sha256": "aa8c8cc949b777b48da8d4dcc6040c7cd89bff901d08b124e50910f7990fef49"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 49.1,
+          "decoded_video_sha256": "7e2feed00c1efb27001d58ac15b251fd8c35a5200bd69caba0ee83ebe1055a2d",
+          "decoded_audio_sha256": "e2632dad370248053b10de698e3f1cd3c3cbedeeac19abe00a9848a913bd271e"
+        },
+        {
+          "kind": "repeatability_probe",
+          "seconds": 49.86,
+          "decoded_video_sha256": "684d2eee37a0a3d3e0619bc7b868e10b362b3c01fa18c808976eae75b92fb59f",
+          "decoded_audio_sha256": "78d1c2f68ad2f7b211ea9557b117ba660d07328ff1e145edd3d3fa849df23d76"
+        }
+      ],
+      "probes_decoded_identical": {
+        "video": false,
+        "audio": false
+      },
+      "first_divergence_by_rank": {
+        "0": "step_00_post",
+        "1": "step_00_post"
+      },
+      "all_four_requests_identical_video": false,
+      "source_report_sha256": "89713fc652fe7ee19f6eeef8b073b2893e9ad7d7290301fe77918e136e5d0566"
+    }
+  }
+}

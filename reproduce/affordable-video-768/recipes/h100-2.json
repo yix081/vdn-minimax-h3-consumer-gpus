@@ -1,0 +1,39 @@
+{
+  "name": "h100-sxm-fp8-2",
+  "source_profile": "pristine-upstream",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc",
+  "server_args": {
+    "model_path": "OpenVDN/vdn-minimax-h3",
+    "num_gpus": 2,
+    "ulysses_degree": 2,
+    "ring_degree": 1,
+    "tp_size": 1,
+    "encoder_parallel": "auto",
+    "attention_backend": "hybrid_window_attn_h3",
+    "performance_mode": "speed",
+    "enable_torch_compile": false,
+    "enable_breakable_cuda_graph": false,
+    "quantization": "fp8",
+    "layerwise_offload_components": [
+      "text_encoder"
+    ],
+    "warmup_mode": "off"
+  },
+  "expected_resolved": {
+    "quantization": "fp8",
+    "num_gpus": 2,
+    "ulysses_degree": 2,
+    "ring_degree": 1,
+    "tp_size": 1,
+    "enable_torch_compile": false,
+    "enable_breakable_cuda_graph": false,
+    "warmup_mode": "off"
+  },
+  "environment": {
+    "NCCL_NVLS_ENABLE": "0",
+    "LEANVDN_SGLANG_ADALN_CACHE": "0",
+    "LEANVDN_STREAM_QUANT_LOAD": "0",
+    "LEANVDN_H3_MEMORY_LIFETIME": "0",
+    "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+  }
+}

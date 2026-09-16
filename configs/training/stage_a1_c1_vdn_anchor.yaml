@@ -1,0 +1,53 @@
+# Stage A1 for the released checkpoints' lineage: chunk-aligned c1 window, vdn_solve
+# delta rule, anchor frames dense in both directions, K/V short conv, text state.
+model:
+  base:
+    source: ckpts/h3-base
+  architecture:
+    hybrid_attention:
+      enable_softmax_gate: true
+      # Frames 0 and F-1 in the softmax mask: columns (everyone sees them), rows (they
+      # see everyone), both, none. A cross-branch fact, hence at this level: only
+      # `both` makes them exact softmax, and only then does the linear branch drop them.
+      anchor_frames: both
+      # The window: chunk=5 means a frame's window is whole 5-frame VAE chunks, radius=1
+      # means its own chunk plus one either side (15 frames). chunk=0 would be a centred
+      # frame window |t_q - t_k| <= radius.
+      softmax_attention: {radius: 1, chunk: 5}
+      linear_attention:
+        delta_rule: vdn_solve
+        linear_head_dim: null        # null = inherit head_dim; RESOLVED into the spec
+        bridge: alpha
+        short_conv:                  # depthwise 5x5 spatial + 5-tap temporal conv on
+          targets: [k, v]            # these linear-branch projections (q left raw)
+        enable_text_state: true
+        a_fp32: true
+
+training:
+  max_steps: 200
+  freeze_softmax_gate: true          # gate held at its 0.99 init
+
+# 50 warmup steps, then cosine to min_lr over the remaining 150; applied per layer with
+# per-layer grad clipping. Same structural big/small split as A2 (utils/lr_classes.py):
+#   big    x big_lr_scale     alpha.down, output_gate.down, beta_proj, to_out_linear, softmax_gate
+#   small  x small_lr_scale   alpha.A_log, alpha.dt_bias, alpha.up, output_gate.up, linear norm
+#          (own AdamW eps)    gain, short-conv taps
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  min_lr: 5.0e-6
+  warmup_steps: 50
+  weight_decay: 0.0
+  grad_clip: 0.1                     # per layer
+  big_lr_scale: 1.0
+  small_lr_scale: 5.0
+  small_eps: 2.0e-9
+
+checkpoint:
+  output_dir: ckpts/train/stage_a1_c1_vdn_anchor
+  save_every: 25
+  early_saves: [0, 1, 2, 4, 8]
+
+data:
+  # Your pre-encoded latents index (see "Data Preprocess" in the README for the layout).
+  index_file: ???

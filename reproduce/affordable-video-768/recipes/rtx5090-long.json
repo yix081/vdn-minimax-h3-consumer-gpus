@@ -1,0 +1,50 @@
+{
+  "case_profile": "long",
+  "environment": {
+    "LEANVDN_LINEAR_LIFETIME": "0",
+    "LEANVDN_STREAM_QUANT_LOAD": "1",
+    "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+  },
+  "expected_resolved": {
+    "num_gpus": 1,
+    "quantization": "mxfp8",
+    "vae_cpu_offload": true
+  },
+  "hardware_guard": {
+    "compute_capability": [
+      12,
+      0
+    ],
+    "minimum_memory_mib": 31000,
+    "name_contains": "RTX 5090"
+  },
+  "patches": [
+    "streamed-quant-loader",
+    "linear-lifetime"
+  ],
+  "performance_protocol": {
+    "feasibility": 0,
+    "timings": 3,
+    "warmups": 2
+  },
+  "server_args": {
+    "attention_backend": "hybrid_window_attn_h3",
+    "enable_breakable_cuda_graph": false,
+    "enable_torch_compile": false,
+    "layerwise_offload_components": [
+      "transformer",
+      "text_encoder"
+    ],
+    "layerwise_resident_layers": {
+      "transformer": 0
+    },
+    "model_path": "OpenVDN/vdn-minimax-h3",
+    "num_gpus": 1,
+    "performance_mode": "speed",
+    "quantization": null,
+    "vae_cpu_offload": true,
+    "warmup_mode": "off"
+  },
+  "source_profile": "streamed-quant-loader-lifetime-off",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc"
+}

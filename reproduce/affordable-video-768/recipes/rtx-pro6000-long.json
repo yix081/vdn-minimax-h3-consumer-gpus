@@ -1,0 +1,57 @@
+{
+  "case_profile": "long",
+  "environment": {
+    "LEANVDN_H3_MEMORY_LIFETIME": "0",
+    "LEANVDN_SGLANG_ADALN_CACHE": "0",
+    "LEANVDN_STREAM_QUANT_LOAD": "0",
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+    "SGLANG_CACHE_DIT_ENABLED": "false",
+    "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+  },
+  "expected_resolved": {
+    "enable_breakable_cuda_graph": false,
+    "enable_torch_compile": false,
+    "num_gpus": 1,
+    "quantization": "mxfp8",
+    "ring_degree": 1,
+    "tp_size": 1,
+    "ulysses_degree": 1,
+    "use_fsdp_inference": false,
+    "vae_cpu_offload": true
+  },
+  "hardware_guard": {
+    "compute_capability": [
+      12,
+      0
+    ],
+    "minimum_memory_mib": 95000,
+    "name_contains": "RTX PRO 6000 Blackwell"
+  },
+  "patches": [],
+  "performance_protocol": {
+    "feasibility": 1,
+    "timings": 3,
+    "warmups": 2
+  },
+  "server_args": {
+    "attention_backend": "hybrid_window_attn_h3",
+    "enable_breakable_cuda_graph": false,
+    "enable_torch_compile": false,
+    "encoder_parallel": "auto",
+    "layerwise_offload_components": [
+      "text_encoder"
+    ],
+    "model_path": "OpenVDN/vdn-minimax-h3",
+    "num_gpus": 1,
+    "performance_mode": "speed",
+    "quantization": null,
+    "ring_degree": 1,
+    "tp_size": 1,
+    "ulysses_degree": 1,
+    "use_fsdp_inference": false,
+    "vae_cpu_offload": true,
+    "warmup_mode": "off"
+  },
+  "source_profile": "pristine-upstream",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc"
+}

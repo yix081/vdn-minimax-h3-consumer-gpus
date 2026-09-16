@@ -1,0 +1,26 @@
+# 8-NFE render. Rung 2 -- the top single-GPU tier: rung 1 + every wide Linear in fp8
+# e4m3 (skip_end_blocks 0; scale granularity per arch, sm90 rowwise / sm100 per-tensor)
+# and 2 warm-up NFE so the render starts in steady state. fp8 changes the sample: same
+# seed != the bf16 render.
+#
+#   python src/inference/infer.py --config configs/inference/8nfe_tuned_fp8.yaml \
+#       checkpoint=... base_source=... render.prompt_file=... render.out=...
+#
+# The ladder: 8nfe -> 8nfe_tuned -> 8nfe_tuned_fp8 -> 8nfe_tuned_fp8_ulysses. Every
+# file says HOW to compute; the command line says WHAT (checkpoint, prompt, output, LoRAs).
+
+kernels:
+  inference_kernels: true
+  softmax_backend: auto
+
+precision:
+  fp8:
+    enabled: true
+    skip_end_blocks: 0
+
+render:
+  num_frames: 345
+  num_steps: 8
+  warmup_steps: 2
+  video_shift: 12.0
+  audio_shift: 3.0

@@ -1,0 +1,23 @@
+# 50-NFE render. Rung 1 -- the same geometry and arithmetic with the inference-only
+# kernels (set_inference_mode), still bf16: sample-identical to rung 0 up to kernel noise.
+#
+#   python src/inference/infer.py --config configs/inference/50nfe_tuned.yaml \
+#       checkpoint=... base_source=... render.prompt_file=... render.out=...
+#
+# The ladder: 50nfe -> 50nfe_tuned -> 50nfe_tuned_fp8 -> 50nfe_tuned_fp8_ulysses. Every
+# file says HOW to compute; the command line says WHAT (checkpoint, prompt, output, LoRAs).
+
+kernels:
+  inference_kernels: true
+  softmax_backend: auto
+
+precision:
+  fp8:
+    enabled: false
+
+render:
+  num_frames: 345
+  num_steps: 50
+  warmup_steps: 0
+  video_shift: 12.0
+  audio_shift: 3.0

@@ -1,0 +1,73 @@
+{
+  "archived_native_b200_server_args_sha256": {
+    "1": "ad91596a6179011e99697c29651d12ab8025b89f750b01e4d4365ca7c4a54e69",
+    "2": "26c861699f6d8188442ea83384200c96f397bc4792e6e239faa7e8d038737abb",
+    "4": "372d9cd8c9b1f71a3c7a676788dd78aa7227cdf3f5ebdb1144a08cb357389015",
+    "8": "c9725eed7a2efe200bfc7c385b1eefeb9989463be0371b8ad6272fe7cb3557c2"
+  },
+  "archived_single_gpu_server_args_canonical_sha256": {
+    "l40s-long": "148476b9eebaf90200c342dc30d0f31df68957939b433ef596650855bed58401",
+    "l40s-short": "148476b9eebaf90200c342dc30d0f31df68957939b433ef596650855bed58401",
+    "rtx-pro5000-long": "794147e29996f5dc3c315303ef856a807ea2f30dbee332707a9b36adc34cb0b3",
+    "rtx-pro5000-short": "794147e29996f5dc3c315303ef856a807ea2f30dbee332707a9b36adc34cb0b3",
+    "rtx-pro6000-long": "20025aabdff940c975518c7897f214d74f16e1595c5d677114785169dcc94e23",
+    "rtx-pro6000-short": "c159d543928b83b53037bd3c693ca85b4681b4192ddc65aae99416884751e252",
+    "rtx4090-short": "51973e46d008786cd18a68785b5cabf1c801c3f00fd4066646dca2b7c55c79d2",
+    "rtx5090-long": "40f44402e6cee73637b51223e8b6f0e7c3a78c77754d036032db036ca4fa05f4",
+    "rtx5090-short": "a6388265ed08d6aac6d0aad81152ed275d5e0d8d9b95c43ed44ed935a1bc9694"
+  },
+  "b200_adaln_extension_sha256": "1781b71b299f8dd7c5664ccb18a18249ffccffd62d1933e497f20c9ae068d029",
+  "cases_sha256": {
+    "long": "074be09e8c57adf1e20e9fc686c16321e2804c055521fc9a94bc147beea20d4e",
+    "short": "112a8ae47bfb187c39a7b32c6416b8ab956460afaf0d819abed1eb8df270bc08"
+  },
+  "model_manifest_sha256": "116bf53898646148133048b02e5c703fa7df2515d0775005bbf4642c2d837594",
+  "ranklocal_loader": {
+    "files": {
+      "python/sglang/multimodal_gen/runtime/loader/affordable_ranklocal_guard.py": {
+        "original_sha256": null,
+        "patched_sha256": "b0a8d62ca3b89ee01d81f7827dd8d94b7f3e5338df173d2640601ee0fc7013d7"
+      },
+      "python/sglang/multimodal_gen/runtime/loader/component_loaders/text_encoder_loader.py": {
+        "original_sha256": "d38ceb91ad8171cd6fda4a14ae9ccc758852bcfdc5b6d79131b8f2161c6b7c58",
+        "patched_sha256": "3089d143758036f67513b083fc8e5575be72945674d05e2c92df8c4f63f52ea2"
+      },
+      "python/sglang/multimodal_gen/runtime/loader/fsdp_load.py": {
+        "original_sha256": "9f01ae268ebd7d0e3abc40b295e25a6d8b24818a8bd110cb1f1e15ab4298c828",
+        "patched_sha256": "310b143cbd78b8db6496fa81569821aa4f6dd03a912ffc1607462c44b811ce94"
+      }
+    },
+    "helper_shipped_as": "tools/ranklocal_guard.py",
+    "patch": "ranklocal-loader"
+  },
+  "requirements_frozen_sha256": "27eb03f1a1af78c9ea2d2554ab4da26ee0a3c7d083f4ff7ffae85b32773079c0",
+  "sglang": {
+    "b200_patched_model_source_sha256": "df1d9caa615ee5f563ac2bd29e5ba6c433cfaaf1cca01b2c0ea1d693b5764f09",
+    "model_source_relative_path": "python/sglang/multimodal_gen/runtime/models/dits/minimax_h3.py",
+    "original_model_source_sha256": "2a61d5c8b0418eed72fd3443cc47b6a06ed8512f6c834b608aa4e3e55e7489fa",
+    "repository": "https://github.com/sgl-project/sglang.git",
+    "revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc",
+    "source_files": {
+      "python/sglang/multimodal_gen/runtime/loader/fsdp_load.py": {
+        "original_sha256": "9f01ae268ebd7d0e3abc40b295e25a6d8b24818a8bd110cb1f1e15ab4298c828",
+        "patch": "streamed-quant-loader",
+        "patched_sha256": "5d726735b4eeb634c36a6d3d3bf19f47dd54f3ea00e3f46cf9ff721d8a676205"
+      },
+      "python/sglang/multimodal_gen/runtime/models/dits/minimax_h3.py": {
+        "original_sha256": "2a61d5c8b0418eed72fd3443cc47b6a06ed8512f6c834b608aa4e3e55e7489fa",
+        "patch": "exact-loaded-projection-adaln-cache",
+        "patched_sha256": "df1d9caa615ee5f563ac2bd29e5ba6c433cfaaf1cca01b2c0ea1d693b5764f09"
+      },
+      "python/sglang/multimodal_gen/runtime/models/dits/minimax_h3_vdn.py": {
+        "original_sha256": "ac3b7aaff8b77bb722498ae903b8412511959a6606fe3e3863c424639040b89f",
+        "patch": "linear-lifetime",
+        "patched_sha256": "9661344060b5ddaea6958819e0d99bffaad2fe4166dd6c31a805ba8792e294b2"
+      },
+      "python/sglang/multimodal_gen/runtime/models/dits/minimax_h3_vdn_attention.py": {
+        "original_sha256": "ff71881cec73e3656a4ed412a10847119bbd85d591cc0fee0f5f6a59096128b8",
+        "patch": "sp-main-stream",
+        "patched_sha256": "9753309a3808dbf5081360787facb71039154ad1ee0d687fc97a41f7f2a35ae2"
+      }
+    }
+  }
+}

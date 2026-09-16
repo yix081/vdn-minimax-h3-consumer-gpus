@@ -1,0 +1,24 @@
+# 50-NFE render. Rung 0 -- the released arithmetic, no inference-only kernels, bf16.
+# With `checkpoint=null` this is the DENSE released model; with a hybrid checkpoint it
+# is the untuned hybrid.
+#
+#   python src/inference/infer.py --config configs/inference/50nfe.yaml \
+#       checkpoint=... base_source=... render.prompt_file=... render.out=...
+#
+# The ladder: 50nfe -> 50nfe_tuned -> 50nfe_tuned_fp8 -> 50nfe_tuned_fp8_ulysses. Every
+# file says HOW to compute; the command line says WHAT (checkpoint, prompt, output, LoRAs).
+
+kernels:
+  inference_kernels: false
+  softmax_backend: auto
+
+precision:
+  fp8:
+    enabled: false
+
+render:
+  num_frames: 345
+  num_steps: 50
+  warmup_steps: 0
+  video_shift: 12.0
+  audio_shift: 3.0

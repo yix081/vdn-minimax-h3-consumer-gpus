@@ -1,0 +1,222 @@
+"""Render glue shared by every inference entrypoint: load_models, load_prompt,
+generate_latents (the denoising loop + packed layout), and decode_and_save with its
+atomic .partial.mp4 write.
+"""
+import os
+import time
+
+import torch
+
+from diffusers import (AutoencoderKLMiniMaxH3, AutoencoderKLMiniMaxH3Audio,
+                       MiniMaxH3Scheduler, MiniMaxH3Transformer3DModel)
+from diffusers.modular_pipelines.minimax_h3.before_denoise import (
+    MiniMaxH3PrepareLayoutStep, patchify_video_latents)
+from diffusers.modular_pipelines.minimax_h3.modular_pipeline import (
+    MINIMAX_H3_AUDIO_CHANNELS as AUDIO_CHANNELS, MINIMAX_H3_AUDIO_TAG as AUDIO_TAG,
+    MINIMAX_H3_FPS as FPS, MINIMAX_H3_VIDEO_TAG as VIDEO_TAG, align_num_frames,
+    audio_latent_num_frames, video_latent_num_frames)
+from diffusers.utils.export_utils import encode_video
+
+from src.models.sequence_layout import layout_from_indices
+from src.paths import H3_BASE, resolve_weights
+from src.models.hybrid_transform import iter_hybrids, set_layout
+
+# The release copy under the repository (transformer/ vae/ audio_vae/); the decoders and
+# the dense `checkpoint=null` render load from here unless the config names another root
+# (`vae_source` / `base_source`). Relative paths resolve against the repo root, not cwd.
+DEFAULT_MODEL_ROOT = H3_BASE
+# The production canvas, 768x1344, through the 16x spatial VAE.
+LATENT_H, LATENT_W = 48, 84
+# Mirrors of MiniMaxH3ModularPipeline.pixel_mean / pixel_std / keyframe_noise_aug: those
+# are properties of an assembled pipeline, which the inlined blocks below never build.
+# 0.999 is the t the fl2va keyframes are held at, just short of clean.
+PIXEL_MEAN, PIXEL_STD = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
+KEYFRAME_NOISE_AUG = 0.999
+
+
+def load_models(model_root: str, device: str, vae_source: str = None,
+                load_decoders: bool = True):
+    """`model_root` holds the transformer; both decoders come from `vae_source`,
+    default the release copy. Ranks that never decode pass `load_decoders=False` and
+    get (transformer, None, None)."""
+    vae_source = resolve_weights(vae_source or DEFAULT_MODEL_ROOT)
+    model_root = resolve_weights(model_root)
+    transformer = MiniMaxH3Transformer3DModel.from_pretrained(
+        model_root, subfolder="transformer", torch_dtype=torch.bfloat16
+    ).to(device)
+    transformer.eval().requires_grad_(False)
+
+    if not load_decoders:
+        return transformer, None, None
+
+    vae = AutoencoderKLMiniMaxH3.from_pretrained(vae_source, subfolder="vae").to(device)
+    audio_vae = AutoencoderKLMiniMaxH3Audio.from_pretrained(vae_source, subfolder="audio_vae").to(device)
+    vae.eval()
+    audio_vae.eval()
+    return transformer, vae, audio_vae
+
+
+def load_prompt(prompt_file: str, device: str):
+    """A prompt cache from encode_prompt.py (t2va) or encode_keyframes.py (i2va / fl2va);
+    both carry prompt_embeds and text_token_tags. Returns (prompt_embeds,
+    text_token_tags, conditions); `conditions` is (keyframe_anchors, condition_latents)
+    for a keyframe cache, else None."""
+    text = torch.load(prompt_file, map_location="cpu", weights_only=True)
+    conditions = None
+    if text.get("keyframe_anchors"):
+        conditions = (tuple(text["keyframe_anchors"]),
+                      [c.to(device, torch.float32) for c in text["condition_latents"]])
+    return text["prompt_embeds"].to(device, torch.bfloat16), text["text_token_tags"], conditions
+
+
+@torch.no_grad()
+def generate_latents(transformer, prompt_embeds, text_token_tags, num_frames, num_steps, seed, device,
+                     video_shift=12.0, audio_shift=3.0, runtime=None, step_seconds=None,
+                     conditions=None):
+    """The sampler. `runtime` (Ulysses) adds a barrier before and after the loop so every
+    rank enters and leaves together; `step_seconds`, if a list, receives the
+    device-synchronised wall time of every NFE (for the timing log and the record).
+
+    `conditions` = (keyframe_anchors, condition_latents) from load_prompt turns the
+    request into i2va / fl2va: the layout reserves one frame of conditioning rows per
+    keyframe between the text and the audio (`[text | keyframes | audio | video]`), the
+    anchors are noised to t = 0.999 and pinned there, and only the generated rows are
+    ever stepped -- the diffusers fl2va blocks, inlined. On a hybrid model the
+    conditioning rows fall outside the layout's video span, i.e. they are attended like
+    text and audio: dense in both directions by the window softmax and absent from the
+    linear scan."""
+    num_frames = align_num_frames(num_frames, 17, 5)
+    num_latent_frames = video_latent_num_frames(num_frames, 17, 5)
+    num_audio_latents = audio_latent_num_frames(num_frames)
+    anchors, condition_latents = conditions if conditions else ((), [])
+    patch = tuple(transformer.config.patch_size)                    # (1, 2, 2)
+    channels = transformer.config.in_channels                       # 24
+    frame_h, frame_w = LATENT_H // patch[1], LATENT_W // patch[2]
+
+    position_ids, token_tags, video_indices, audio_indices, text_indices, num_condition_rows, _ = (
+        MiniMaxH3PrepareLayoutStep.build_packed_sequence(
+            text_token_tags, num_latent_frames, LATENT_H, LATENT_W, num_audio_latents,
+            patch, AUDIO_CHANNELS, AUDIO_TAG, VIDEO_TAG, keyframe_anchors=anchors,
+        )
+    )
+    position_ids, token_tags = position_ids.to(device), token_tags.to(device)
+    video_indices, audio_indices, text_indices = (
+        video_indices.to(device), audio_indices.to(device), text_indices.to(device),
+    )
+
+    # A hybrid-converted transformer needs the packed layout before every forward; the
+    # layout is the same at every denoising step, so set it once per generation.
+    if next(iter_hybrids(transformer), None) is not None:
+        # frame_size and text_indices unconditionally: carrying them is free, and only
+        # their consumers are gated (short_conv / text_state).
+        set_layout(transformer, layout_from_indices(
+            video_indices[num_condition_rows:], num_latent_frames, frame_h * frame_w,
+            seq_len=position_ids.shape[0], frame_size=(frame_h, frame_w),
+            text_indices=text_indices,
+        ))
+
+    # The scheduler counts sigma grid points, the terminal 0 included: one more than the
+    # num_steps model evaluations.
+    scheduler = MiniMaxH3Scheduler(shift=video_shift)
+    audio_scheduler = MiniMaxH3Scheduler(shift=audio_shift)
+    scheduler.set_timesteps(num_steps + 1, device=device)
+    audio_scheduler.set_timesteps(num_steps + 1, device=device)
+
+    generator = torch.Generator(device).manual_seed(seed)
+    # The conditioning noise is drawn first, one draw per keyframe, before the generated
+    # rows' noise (MiniMaxH3PrepareConditionLatentsStep's order).
+    condition_rows = []
+    for condition in condition_latents:
+        noise = torch.randn(condition.shape, generator=generator, device=device, dtype=torch.float32)
+        noised = scheduler.scale_noise(condition, KEYFRAME_NOISE_AUG, noise)
+        condition_rows.append(patchify_video_latents(noised, patch))
+    latents = torch.randn((1, channels, num_latent_frames, LATENT_H, LATENT_W),
+                          generator=generator, device=device, dtype=torch.float32)
+    video_rows = patchify_video_latents(latents, patch)
+    if condition_rows:
+        video_rows = torch.cat(condition_rows + [video_rows])
+        if video_rows.shape[0] != video_indices.numel():
+            raise ValueError(f"{video_rows.shape[0]} video rows (with conditioning) != "
+                             f"{video_indices.numel()} layout rows")
+    audio_rows = torch.randn((num_audio_latents * AUDIO_CHANNELS, 32),
+                             generator=generator, device=device, dtype=torch.float32)
+
+    if runtime is not None:
+        runtime.barrier()
+        torch.cuda.synchronize(device)
+
+    seq_len = position_ids.shape[0]
+    for t, audio_t in zip(scheduler.timesteps, audio_scheduler.timesteps):
+        step_started = time.perf_counter()
+        row_timesteps = torch.full((seq_len,), float(t), dtype=torch.float32, device=device)
+        if num_condition_rows:
+            row_timesteps[video_indices[:num_condition_rows]] = max(float(t), KEYFRAME_NOISE_AUG)
+        row_timesteps[audio_indices] = float(audio_t)
+        timestep, timestep_indices = torch.unique(row_timesteps, sorted=True, return_inverse=True)
+        noise_pred, audio_noise_pred = transformer(
+            hidden_states=video_rows[None],
+            audio_hidden_states=audio_rows[None],
+            encoder_hidden_states=prompt_embeds[None],
+            timestep=timestep,
+            timestep_indices=timestep_indices,
+            token_tags=token_tags,
+            position_ids=position_ids,
+            video_indices=video_indices,
+            audio_indices=audio_indices,
+            text_indices=text_indices,
+            return_dict=False,
+        )
+        # only the generated rows step; the anchors ride through unchanged
+        video_rows[num_condition_rows:] = scheduler.step(
+            noise_pred[0, num_condition_rows:].float(), t, video_rows[num_condition_rows:],
+            return_dict=False)[0]
+        audio_rows = audio_scheduler.step(audio_noise_pred[0].float(), audio_t, audio_rows, return_dict=False)[0]
+
+        if step_seconds is not None:
+            torch.cuda.synchronize(device)
+            step_seconds.append(time.perf_counter() - step_started)
+
+    if runtime is not None:
+        torch.cuda.synchronize(device)
+        runtime.barrier()
+
+    # Unpatchify (the AfterDenoise step's reshape) and unpack the channel-major audio rows.
+    video_rows = video_rows[num_condition_rows:]
+    rows = video_rows.reshape(-1, num_latent_frames, frame_h, frame_w, channels, *patch)
+    rows = rows.permute(0, 4, 1, 5, 2, 6, 3, 7)
+    latents = rows.reshape(-1, channels, num_latent_frames, LATENT_H, LATENT_W).contiguous()
+    audio_latents = audio_rows.reshape(AUDIO_CHANNELS, num_audio_latents, 32).permute(0, 2, 1).contiguous()
+    return latents, audio_latents
+
+
+@torch.no_grad()
+def decode_and_save(latents, audio_latents, vae, audio_vae, out_path: str, device: str):
+    latents_mean = torch.tensor(vae.config.latents_mean, device=device).view(1, -1, 1, 1, 1)
+    latents_std = torch.tensor(vae.config.latents_std, device=device).view(1, -1, 1, 1, 1)
+    with torch.autocast(device_type="cuda", dtype=torch.float16):
+        video = vae.decode(latents * latents_std + latents_mean, return_dict=False)[0]
+    pixel_mean = torch.tensor(PIXEL_MEAN, device=device).view(1, -1, 1, 1, 1)
+    pixel_std = torch.tensor(PIXEL_STD, device=device).view(1, -1, 1, 1, 1)
+    video = (video.float() * pixel_std + pixel_mean).clamp(0, 1)
+
+    audio_latents_mean = torch.tensor(audio_vae.config.latents_mean, device=device).view(1, -1, 1)
+    audio_latents_std = torch.tensor(audio_vae.config.latents_std, device=device).view(1, -1, 1)
+    audio = audio_vae.decode(audio_latents * audio_latents_std + audio_latents_mean, return_dict=False)[0]
+    audio = audio.float().permute(1, 0, 2)[0]  # (2, num_samples)
+
+    frames = (video[0].permute(1, 2, 3, 0) * 255).round().to(torch.uint8).cpu()  # (F, H, W, 3)
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+
+    # Encode to a sibling temp name and rename into place, so a render that is killed
+    # mid-encode never leaves a truncated clip under the final name (anything that
+    # treats "the mp4 exists" as "done" would otherwise pick it up). os.replace is
+    # atomic within a directory, so the final name only ever appears complete.
+    # The suffix goes BEFORE the extension: PyAV infers the container format from the
+    # output filename, and "clip.mp4.partial" makes av.open raise "Could not determine
+    # output format". Same directory either way, which is what os.replace needs.
+    stem, ext = os.path.splitext(out_path)
+    partial_path = f"{stem}.partial{ext}"
+    encode_video(frames, fps=FPS, output_path=partial_path,
+                 audio=audio.cpu(), audio_sample_rate=audio_vae.config.sampling_rate)
+    os.replace(partial_path, out_path)
+    print(f"wrote {out_path}", flush=True)

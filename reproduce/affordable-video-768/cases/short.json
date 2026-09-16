@@ -1,0 +1,9 @@
+[
+  {
+    "id": "pouring_124",
+    "prompt": "integrated_multimodal_description: A continuous close-up of an adult hand tilting a clear glass pitcher and pouring water into a transparent tumbler on a wooden table. The water level rises visibly, then the hand tilts the pitcher upright and the stream stops. The camera stays fixed. Realistic reflections and fluid motion.\n\noverall_soundscape: Water pouring and a brief final drip, synchronized with the visible stream. No speech.\n\nnon_diegetic_music: N/A",
+    "seed": 17,
+    "duration_seconds": 5.166666666666667,
+    "expected_frames": 124
+  }
+]

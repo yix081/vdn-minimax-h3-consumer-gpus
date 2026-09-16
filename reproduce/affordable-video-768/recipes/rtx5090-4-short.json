@@ -1,0 +1,71 @@
+{
+  "case_profile": "short",
+  "environment": {
+    "AFFORDABLE_H3_LOAD_LOCK_TIMEOUT_S": "1200",
+    "AFFORDABLE_H3_RANKLOCAL_STREAM": "1",
+    "LEANVDN_SP_MAIN_STREAM": "1",
+    "LEANVDN_STREAM_QUANT_LOAD": "0",
+    "NCCL_NVLS_ENABLE": "0",
+    "SGLANG_DIFFUSION_STAGE_LOGGING": "1"
+  },
+  "expected_resolved": {
+    "dp_size": 1,
+    "enable_breakable_cuda_graph": false,
+    "enable_torch_compile": false,
+    "encoder_parallel": "fold",
+    "num_gpus": 4,
+    "quantization": "mxfp8",
+    "ring_degree": 1,
+    "tp_size": 1,
+    "ulysses_degree": 4,
+    "vae_cpu_offload": false,
+    "warmup_mode": "off"
+  },
+  "hardware_guard": {
+    "compute_capability": [
+      12,
+      0
+    ],
+    "minimum_memory_mib": 31000,
+    "name_contains": "RTX 5090"
+  },
+  "patches": [
+    "ranklocal-loader",
+    "sp-main-stream"
+  ],
+  "performance_protocol": {
+    "feasibility": 0,
+    "timings": 3,
+    "warmups": 2
+  },
+  "server_args": {
+    "attention_backend": "hybrid_window_attn_h3",
+    "cfg_parallel_degree": 1,
+    "dist_timeout": 3600,
+    "dp_size": 1,
+    "enable_breakable_cuda_graph": false,
+    "enable_cfg_parallel": false,
+    "enable_torch_compile": false,
+    "encoder_parallel": "fold",
+    "layerwise_offload_components": [
+      "transformer",
+      "text_encoder"
+    ],
+    "layerwise_resident_layers": {
+      "transformer": 0
+    },
+    "minimax_h3_adaln_cache_path": null,
+    "minimax_h3_adaln_online": false,
+    "model_path": "OpenVDN/vdn-minimax-h3",
+    "num_gpus": 4,
+    "performance_mode": "speed",
+    "quantization": null,
+    "ring_degree": 1,
+    "tp_size": 1,
+    "ulysses_degree": 4,
+    "vae_cpu_offload": false,
+    "warmup_mode": "off"
+  },
+  "source_profile": "ranklocal-loader-sp-main-stream",
+  "source_revision": "d72e59508b7554045cb51827f9b8d0f08c7a3abc"
+}
